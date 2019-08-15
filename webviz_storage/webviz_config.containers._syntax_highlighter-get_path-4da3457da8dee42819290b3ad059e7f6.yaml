@@ -1,0 +1,72 @@
+# This file demonstrates usage of webviz in a FMU setting
+# The configuration files uses YAML (https://en.wikipedia.org/wiki/YAML).
+
+title: Introducing Webviz
+username: some_username
+password: some_password
+
+# FMU ensembles are stored on disk at these paths
+container_settings:
+  scratch_ensembles:
+    reek: /scratch/fmu/eza/25_r002_reek/realization-*/iter-0/
+    struct_unc: /scratch/fmu/hakal/volve/volve_example3/realization-*/iter-0
+    prior: /scratch/fmu/akia/volve/volve_example2/realization-*/iter-0
+    posterior: /scratch/fmu/akia/volve/volve_example2/realization-*/iter-3
+
+#Webviz pages
+pages:
+ - title: Introduction
+   content:
+    - container: Markdown
+      markdown_file: ./introduction.md
+    
+ - title: Webviz in FMU
+   content:
+    - container: Markdown
+      markdown_file: ./fmu.md
+    - '### Understanding uncertainty in model parameters'
+    - Explore and QC model parameters both as prior (input) distributions and how they are adjusted after being updated by the Ensemble Smoother method.
+    - The correlation matrix shows the pairwise correlation of all model parameters. To investigate the distribution of each pair, click a cell or choose manually from the selectors.
+    - container: ParameterDistribution
+      ensembles: [prior, posterior]
+
+    - ---
+    - '### Uncertainty in simulation profiles'
+    - Resulting simulation profiles from an ensemble of simulation runs
+    - Different vectors can be selected and visualized either per realization or as summarized statistics.
+    - container: SummaryStats
+      ensembles: [prior]
+
+    - ---
+    - '### Evaluating production misfit'
+    - Production misfit of different ensembles with varying degree of seismic conditioning implemented.
+    - No conditioning in the left-most plot and increased conditioning towards the right
+    - Each point represents one model run (realization)
+    - container: TablePlotter
+      csv_file: ./misfit.csv
+      plot_options:
+        x: prod_misfit
+        y: ts3map_misfit
+        facet_col: case
+      lock: True
+    - iter-0  --  prior
+    - noseis  --  conditioning to prod data, RFT
+    - ts1maps --  conditioning to prod data, RFT, 1 4D TS map (2003-2000)
+    - ts2map  --  conditioning to prod data, RFT, 2 4D TS maps (2001-200, 2003-2001)
+    - ts3map  --  conditioning to prod data, RFT, 3 4D TS maps (2001-2000, 2003-2001, 2003-2000)
+
+ - title: Work in progress
+   content:
+    - container: Markdown
+      markdown_file: ./inprogress.md
+ - title: How was this made
+   content:
+    - This **Webviz instance** was created from the following configuration file
+    - container: SyntaxHighlighter
+      filename: ./basic_example.yaml
+      dark_theme: True
+    
+ - title: Resources
+   content:
+   - container: Markdown
+     markdown_file: ./resources.md
